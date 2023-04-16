@@ -21,7 +21,7 @@ const SignInForm = ({ onSubmitForm, loading }: Props) => {
       .string()
       .required("Please enter your password")
       .min(6, "Your password must be at least 6 characters or greater")
-      .matches(/[a-zA-Z]/, "Password can only contain Latin letters."),
+      // .matches(/[a-zA-Z]/, "Password can only contain Latin letters."),?
   });
 
   const {
