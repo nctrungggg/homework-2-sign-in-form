@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    overflow-x: none;
+    -ms-overflow-style: none;
+    font-family: "Epilogue", sans-serif;
+    background-color: #f7f7f7;
+  }
+
+  body::-webkit-scrollbar {
+    display: none;
+  }
+
+  li {
+    @apply px-4;
+    @apply cursor-pointer;
+  }
+
+  p {
+    font-size: 14px;
+  }
+}
