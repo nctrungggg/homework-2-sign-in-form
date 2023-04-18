@@ -6,12 +6,13 @@ interface Props {
   name: string;
   placeholder: string;
   control: any;
+  disabled?: boolean;
 }
 
 const Input = ({
   type = "text",
   name = "",
-  placeholder = "",
+  placeholder = "Input",
   control,
   ...props
 }: Props) => {
@@ -27,7 +28,7 @@ const Input = ({
       placeholder={placeholder}
       {...field}
       {...props}
-      className="p-4  border outline-none placeholder:text-sm bg-[#f7f7f7] border-slate-300 w-full rounded-xl  text-base"
+      className="p-4 pl-0 border-0 border-b-[1px] text-gray-600 outline-none placeholder:text-[13px] bg-[#f7f7f7] border-slate-300 w-full text-base"
     />
   );
 };

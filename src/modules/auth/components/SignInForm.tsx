@@ -1,10 +1,12 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-import * as yup from "yup";
+import * as Yup from "yup";
 import Input from "../../../components/input/Input";
 import Label from "../../../components/label/Label";
 import { ILoginParams } from "../../../models/auth";
 import { NavLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useState } from "react";
 
 interface Props {
   onSubmitForm(values: ILoginParams): void;
@@ -12,16 +14,13 @@ interface Props {
 }
 
 const SignInForm = ({ onSubmitForm, loading }: Props) => {
-  const schema = yup.object().shape({
-    email: yup
-      .string()
-      .email("Please enter valid email address")
-      .required("Please enter your email address"),
-    password: yup
-      .string()
-      .required("Please enter your password")
-      .min(6, "Your password must be at least 6 characters or greater")
-      // .matches(/[a-zA-Z]/, "Password can only contain Latin letters."),?
+  const { t } = useTranslation("translation");
+
+  const schema = Yup.object().shape({
+    email: Yup.string().email("emailInvalid").required("emailRequire"),
+    password: Yup.string()
+      .required("passwordRequire")
+      .min(6, "minPasswordInvalid"),
   });
 
   const {
@@ -32,6 +31,7 @@ const SignInForm = ({ onSubmitForm, loading }: Props) => {
     mode: "onChange",
     resolver: yupResolver(schema),
   });
+  console.log(errors);
 
   const handleSignIn = (values: any): void => {
     if (!isValid) return;
@@ -42,37 +42,44 @@ const SignInForm = ({ onSubmitForm, loading }: Props) => {
   return (
     <form onSubmit={handleSubmit(handleSignIn)} autoComplete="off">
       <div className="mb-8">
-        <Label htmlFor="email">Email address</Label>
+        <Label htmlFor="email">{t("email")}</Label>
         <Input
           type="email "
           name="email"
-          placeholder="Enter your email..."
+          placeholder={t("placeholderEmail")}
           control={control}
         />
 
         <p className="pt-3 text-red-500 text-[13px]">
-          {errors?.email?.message}
+          {errors.email && t(errors.email.message)}
+          {/* {errors?.email?.type === "optionality" && t("emailRequire")}
+          {errors?.email?.type === "email" && t("emailInvalid")}
+          {errors?.email?.type === "required" && t("emailRequire")} */}
         </p>
       </div>
 
       <div>
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password">{t("password")}</Label>
         <Input
           type="password"
           name="password"
-          placeholder="Enter your password..."
+          placeholder={t("placeholderPassword")}
           control={control}
         />
         <p className="pt-3 text-red-500 text-[13px]">
-          {errors?.password?.message}
+          {errors.password && t(errors.password.message)}
+
+          {/* {errors?.password?.type === "optionality" && t("passwordRequire")}
+          {errors?.password?.type === "required" && t("passwordRequire")}
+          {errors?.password?.type === "min" && t("minPasswordInvalid")} */}
         </p>
       </div>
 
       <p className="mt-10 mb-6 text-sm">
-        You have not had an account?{" "}
+        {t("textRegister")}{" "}
         <NavLink className="font-medium" to={"/sign-up"}>
-          Register an account
-        </NavLink>{" "}
+          {t("register")}
+        </NavLink>
       </p>
 
       <button
@@ -102,7 +109,7 @@ const SignInForm = ({ onSubmitForm, loading }: Props) => {
             <span className="sr-only">Loading...</span>
           </div>
         ) : (
-          "Sign In"
+          t("login")
         )}
       </button>
     </form>

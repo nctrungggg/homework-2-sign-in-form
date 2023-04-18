@@ -1,21 +1,24 @@
 import { unwrapResult } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { ILoginParams } from "../models/auth";
 import SignInForm from "../modules/auth/components/SignInForm";
 import { login } from "../modules/auth/redux/AuthSlice";
 import { useState } from "react";
 import { ROUTES } from "../configs/routes";
+import { useTranslation } from "react-i18next";
+import i18n from "i18next";
 
 const SignInPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const { t } = useTranslation("translation");
+
   const [loading, setLoading] = useState(false);
 
-  const user = useSelector((state: any) => state.auth);
-  console.log("user:", user);
+  const authToken = sessionStorage.getItem("access_token");
 
   const handleSubmitForm = async (values: ILoginParams) => {
     try {
@@ -29,7 +32,9 @@ const SignInPage = () => {
       setTimeout(() => {
         setLoading(false);
 
-        toast.success("Logged in successfully!!");
+        toast.success("Logged in successfully!!", {
+          autoClose: 2000,
+        });
 
         navigate(ROUTES.home);
       }, 2000);
@@ -42,10 +47,16 @@ const SignInPage = () => {
     }
   };
 
+  if (authToken) {
+    return <Navigate to={ROUTES.pageNotFound} />;
+  }
+
   return (
     <div className="flex justify-center p-12">
       <div className="rounded-xl w-[450px] shadow-md h-[600px] py-10 px-14">
-        <h1 className="mb-10 text-3xl font-semibold text-center">Sign In</h1>
+        <h1 className="mb-10 text-3xl font-semibold text-center">
+          {t("signIn")}
+        </h1>
 
         <SignInForm onSubmitForm={handleSubmitForm} loading={loading} />
       </div>
