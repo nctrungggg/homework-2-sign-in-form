@@ -63,9 +63,11 @@ const SignUpForm = ({
 
   console.log("errors", errors);
 
-  const [disableCity, setDisableCity] = useState(true);
+  const [disableCity, setDisableCity] = useState(false);
 
   const handleSignUp = (values: any) => {
+    console.log(values);
+
     if (!isValid) return;
 
     onSubmitForm(values);
@@ -74,7 +76,12 @@ const SignUpForm = ({
   const handleChangeCountry = (
     e: React.ChangeEvent<HTMLSelectElement>
   ): void => {
-    setDisableCity(false);
+    console.log(e.target.value);
+    register("region").onChange(e);
+
+    if (e.target.value === "") return setDisableCity(false);
+
+    setDisableCity(true);
 
     handleFetchCity(e.target.value);
   };
@@ -158,6 +165,7 @@ const SignUpForm = ({
         <select
           {...register("region")}
           name="region"
+          id="underline_select"
           className="cursor-pointer block py-2.5 px-0 w-full text-[13px] text-gray-600 bg-transparent border-0 border-b-[1px] border-slate-300 appearance-none focus:outline-none focus:ring-0 focus:border-slate-300 peer"
           onChange={(e) => handleChangeCountry(e)}
         >
@@ -175,28 +183,29 @@ const SignUpForm = ({
         </p>
       </div>
 
-      <div className="mb-6">
-        <Label htmlFor="state">{t("state")}</Label>
-        <select
-          defaultValue={"DEFAULT"}
-          disabled={disableCity}
-          {...register("state")}
-          name="state"
-          id="underline_select"
-          className=" cursor-pointer block py-2.5 px-0 w-full text-[13px] text-gray-600 bg-transparent border-0 border-b-[1px] border-slate-300 appearance-none focus:outline-none focus:ring-0 focus:border-slate-300 peer"
-        >
-          <option value="">{t("chooseState")}</option>
+      {disableCity && (
+        <div className="mb-6">
+          <Label htmlFor="state">{t("state")}</Label>
+          <select
+            defaultValue={"DEFAULT"}
+            {...register("state")}
+            name="state"
+            id="underline_select"
+            className=" cursor-pointer block py-2.5 px-0 w-full text-[13px] text-gray-600 bg-transparent border-0 border-b-[1px] border-slate-300 appearance-none focus:outline-none focus:ring-0 focus:border-slate-300 peer"
+          >
+            <option value="">{t("chooseState")}</option>
 
-          {cityList?.map((country: ICountryParams) => (
-            <option key={country.id} value={country.id}>
-              {country.name}
-            </option>
-          ))}
-        </select>
-        <p className="pt-3 text-red-500 text-[13px]">
-          {errors.state && t(errors.state.message)}
-        </p>
-      </div>
+            {cityList?.map((country: ICountryParams) => (
+              <option key={country.id} value={country.id}>
+                {country.name}
+              </option>
+            ))}
+          </select>
+          <p className="pt-3 text-red-500 text-[13px]">
+            {errors.state && t(errors.state.message)}
+          </p>
+        </div>
+      )}
 
       <p className="mt-10 mb-6 text-sm">
         {t("textLogin")}{" "}
